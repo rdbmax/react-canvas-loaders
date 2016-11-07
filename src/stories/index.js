@@ -2,6 +2,7 @@ import React from 'react'
 import { storiesOf } from '@kadira/storybook'
 import LoaderParticles from '../loader-particles'
 import LoaderWaves from '../loader-waves'
+import LoaderCircle from '../loader-circle'
 
 storiesOf('LoaderParticles', module)
   .add('default loader', () => <LoaderParticles />)
@@ -30,3 +31,6 @@ storiesOf('LoaderWaves', module)
       waveSize={ 0.3 }
       borderColor='#AAAAAA'
       waveColor='#DDDDDD' />)
+
+storiesOf('LoaderCircle', module)
+  .add('defaut loader', () => <LoaderCircle />)
