@@ -8,7 +8,7 @@ import Eclipse from './Eclipse'
 class LoaderCircles extends PureComponent {
 
   componentDidMount() {
-    const { colorCircles, circlesQuantity } = this.props
+    const { colorCircles, circlesQuantity, loaderSize } = this.props
 
     window.requestAnimFrame = (() => {
       return window.requestAnimationFrame ||
@@ -21,8 +21,9 @@ class LoaderCircles extends PureComponent {
 
     const canvas = this.canvasRef
     const ctx = canvas.getContext('2d')
-    canvas.width = 200
-    canvas.height = 200
+
+    canvas.width = loaderSize || 100
+    canvas.height = loaderSize || 100
 
     const definitiveColorCircles = colorCircles || 'rgba(0, 0, 0, 0.5)'
 
@@ -58,7 +59,8 @@ class LoaderCircles extends PureComponent {
 
 LoaderCircles.propTypes = {
   colorCircles: PropTypes.string,
-  circlesQuantity: PropTypes.number
+  circlesQuantity: PropTypes.number,
+  loaderSize: PropTypes.number
 }
 
 export default LoaderCircles
