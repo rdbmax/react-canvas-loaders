@@ -1,108 +1,86 @@
-/* eslint no-undef: 0 */
 import React, { PropTypes, PureComponent } from 'react'
 
-class Osc {
-  constructor(theMax) {
-    this.variation = 0.4
-    this.theMax = theMax
-    this.speed = 0.02
-
-    this.a = 0
-    this.max = this.maximum
-  }
-
-  get amp() {
-    this.a += this.speed
-
-    if (this.a >= 2.0) {
-      this.a = 0
-      this.max = this.maximum
-    }
-    return this.max * Math.sin(this.a * Math.PI)
-  }
-
-  get maximum() {
-    return (Math.random() * this.theMax * this.variation) + (this.theMax * (1 - this.variation))
-  }
-}
+import requestAnimationFrame from '../utils/get-request-anim-frame'
+import Osc from './Osc'
 
 class LoaderWaves extends PureComponent {
 
-  componentDidMount() {
-    const { waveColor, borderColor, borderSize, size, waveSize } = this.props
+  constructor(props) {
+    super(props)
 
-    const borderWidth = borderSize || 10
+    this.count = 40
+    const buffer = new ArrayBuffer(this.count * 4)
+    this.points = new Float32Array(buffer)
+    this.waveColor = props.waveColor || 'black'
+    this.borderColor = props.borderColor || 'black'
+    this.borderSize = props.borderSize || 10
+    this.canvasWidth = props.size || 300
+    this.canvasHeight = props.size || 300
+    this.step = Math.ceil(this.canvasWidth / this.count)
+    const osc1Max = (this.canvasHeight * (props.waveSize || 0.2)) / 2
+    this.osc1 = new Osc(osc1Max)
+    this.horizon = this.canvasHeight * 0.5
+  }
+
+  componentDidMount() {
     const canvas = this.canvasRef
     const ctx = canvas.getContext('2d')
-    canvas.width = size || 300
-    canvas.height = size || 300
-    const osc1Max = (canvas.height * (waveSize || 0.2)) / 2
-    const osc1 = new Osc(osc1Max)
-    const count = 40
-    const step = Math.ceil(canvas.width / count)
-    const buffer = new ArrayBuffer(count * 4)
-    const points = new Float32Array(buffer)
-    const horizon = canvas.height * 0.5
 
-    window.requestAnimFrame = (() => {
-      return window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
-        (callback => window.setTimeout(callback, 1000 / 60))
-    })()
+    canvas.width = this.canvasWidth
+    canvas.height = this.canvasHeight
 
     const fill = () => {
-      for (let i = 0; i < count; i += 1) {
-        points[i] = osc1.amp + horizon // mixer(osc1, osc2, osc3);
+      for (let i = 0; i < this.count; i += 1) {
+        this.points[i] = this.osc1.amp + this.horizon
       }
     }
     fill()
 
     // clip
-    ctx.strokeStyle = borderColor || 'black'
-    ctx.lineWidth = borderWidth
+    ctx.strokeStyle = this.borderColor || 'black'
+    ctx.lineWidth = this.borderSize
     ctx.beginPath()
     ctx.arc(
       canvas.width / 2, canvas.height / 2, // center of circle
-      (canvas.height / 2) - (borderWidth / 2), // rayon
+      (canvas.height / 2) - (this.borderSize / 2), // rayon
       0, Math.PI * 2, false
     )
     ctx.stroke()
     ctx.clip()
 
-    const loop = () => {
-      let i
+    this.animloop()
+  }
 
-      // move points to the left
-      for (i = 0; i < count - 1; i += 1) {
-        points[i] = points[i + 1]
-      }
+  animloop = () => {
+    const { width, height } = this.canvasRef
+    const ctx = this.canvasRef.getContext('2d')
 
-      // get a new point
-      points[count - 1] = osc1.amp + horizon // mixer(osc1, osc2, osc3)
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      // render wave
-      ctx.fillStyle = waveColor || 'black'
-      ctx.lineWidth = 3
-      ctx.beginPath()
-      ctx.moveTo(0, points[0])
-      for (i = 1; i < count; i += 1) {
-        ctx.lineTo(i * step, points[i])
-      }
-      ctx.lineTo(count * step, canvas.height)
-      ctx.lineTo(0, canvas.height)
-      ctx.lineTo(0, points[0])
-      ctx.closePath()
-      ctx.fill()
-
-
-      requestAnimationFrame(loop)
+    let i
+    // move points to the left
+    for (i = 0; i < this.count - 1; i += 1) {
+      this.points[i] = this.points[i + 1]
     }
-    loop()
+
+    // get a new point
+    this.points[this.count - 1] = this.osc1.amp + this.horizon // mixer(osc1, osc2, osc3)
+
+    ctx.clearRect(0, 0, width, height)
+
+    // render wave
+    ctx.fillStyle = this.waveColor
+    ctx.lineWidth = 3
+    ctx.beginPath()
+    ctx.moveTo(0, this.points[0])
+    for (i = 1; i < this.count; i += 1) {
+      ctx.lineTo(i * this.step, this.points[i])
+    }
+    ctx.lineTo(this.count * this.step, height)
+    ctx.lineTo(0, height)
+    ctx.lineTo(0, this.points[0])
+    ctx.closePath()
+    ctx.fill()
+
+    requestAnimationFrame(this.animloop)
   }
 
   render() {
