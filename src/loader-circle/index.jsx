@@ -1,23 +1,14 @@
-/* eslint no-undef: 0 */
 import times from 'lodash/times'
 
 import React, { PropTypes, PureComponent } from 'react'
 
+import requestAnimationFrame from '../utils/get-request-anim-frame'
 import Eclipse from './Eclipse'
 
 class LoaderCircles extends PureComponent {
 
   componentDidMount() {
     const { colorCircles, circlesQuantity, loaderSize } = this.props
-
-    window.requestAnimFrame = (() => {
-      return window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
-        (callback => window.setTimeout(callback, 1000 / 60))
-    })()
 
     const canvas = this.canvasRef
     const ctx = canvas.getContext('2d')
@@ -45,7 +36,7 @@ class LoaderCircles extends PureComponent {
 
     ctx.clearRect(0, 0, width, height)
     this.eclipses.forEach(eclipse => eclipse.draw())
-    requestAnimFrame(this.animloop)
+    requestAnimationFrame(this.animloop)
   }
 
   render() {

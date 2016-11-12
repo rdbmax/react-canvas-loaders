@@ -1,8 +1,8 @@
-/* eslint no-undef: 0 */
-
 import times from 'lodash/times'
 
 import React, { PropTypes, PureComponent } from 'react'
+
+import requestAnimationFrame from '../utils/get-request-anim-frame'
 
 class LoaderParticles extends PureComponent {
 
@@ -14,15 +14,6 @@ class LoaderParticles extends PureComponent {
       particlesQuantity,
       loaderVelocity
     } = this.props
-
-    window.requestAnimFrame = (() => {
-      return window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
-        (callback => window.setTimeout(callback, 1000 / 60))
-    })()
 
     function getRandomColor() {
       const letters = '0123456789ABCDEF'
@@ -70,7 +61,7 @@ class LoaderParticles extends PureComponent {
     function animloop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       paintCanvas()
-      requestAnimFrame(animloop)
+      requestAnimationFrame(animloop)
     }
 
     animloop()
