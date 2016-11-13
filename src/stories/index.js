@@ -4,7 +4,7 @@ import LoaderParticles from '../loader-particles'
 import LoaderWaves from '../loader-waves'
 import LoaderCircles from '../loader-circles'
 
-import LoaderSphere from '../loader-sphere'
+import LoaderSpheres from '../loader-spheres'
 
 
 storiesOf('LoaderParticles', module)
@@ -41,5 +41,5 @@ storiesOf('LoaderCircles', module)
   .add('custom quantity', () => <LoaderCircles circlesQuantity={ 5 } />)
   .add('custom size', () => <LoaderCircles loaderSize={ 200 } />)
 
-storiesOf('LoaderSphere', module)
-  .add('defaut loader', () => <LoaderSphere loaderWidth={ 300 } loaderHeight={ 300 } />)
+storiesOf('LoaderSpheres', module)
+  .add('defaut loader', () => <LoaderSpheres loaderWidth={ 300 } loaderHeight={ 300 } />)

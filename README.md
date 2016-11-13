@@ -118,3 +118,15 @@ All props are optional
 - `loaderSize`
 `type: number`
 `default: 100`
+
+### loader-spheres
+
+#### import
+
+```
+import LoaderSpheres from 'react-canvas-loaders/dist/loader-spheres'
+
+...
+
+<LoaderSpheres />
+```

@@ -2,9 +2,10 @@
 import { times } from 'lodash'
 import React, { PureComponent, PropTypes } from 'react'
 
-import { Scene, PerspectiveCamera, Sprite, WebGLRenderer } from 'three'
+import { Scene, PerspectiveCamera, Sprite } from 'three'
+import { SpriteCanvasMaterial, CanvasRenderer } from '../utils/CanvasRenderer'
 
-import SpriteCanvasMaterial from '../utils/SpriteCanvasMaterial'
+import requestAnimationFrame from '../utils/get-request-anim-frame'
 
 class LoaderSphere extends PureComponent {
   camera = null
@@ -18,14 +19,8 @@ class LoaderSphere extends PureComponent {
     const { loaderWidth, loaderHeight } = this.props
 
     this.camera = new PerspectiveCamera(70, loaderWidth / loaderHeight, 1, 1000)
-    this.camera.position.z = 400
+    this.camera.position.z = 1000
     this.scene = new Scene()
-
-    // const geometry = new BoxBufferGeometry(200, 200, 200)
-
-    // this.mesh = new Mesh(geometry)
-    // this.scene.add(this.mesh)
-
 
     // particles
     const PI2 = Math.PI * 2
@@ -50,32 +45,20 @@ class LoaderSphere extends PureComponent {
       return particle
     })
 
-    this.renderer = new WebGLRenderer()
+    this.renderer = new CanvasRenderer()
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(loaderWidth, loaderHeight)
     this.containerRef.appendChild(this.renderer.domElement)
-
-    window.requestAnimFrame = (() => {
-      return window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
-        (callback => window.setTimeout(callback, 1000 / 60))
-    })()
 
     this.animate()
   }
 
   animate = () => {
-    window.requestAnimFrame(this.animate)
-    // this.mesh.rotation.x += 0.005
-    // this.mesh.rotation.y += 0.01
+    requestAnimationFrame(this.animate)
     this.renderer.render(this.scene, this.camera)
   }
 
   render() {
-    console.log('three', SpriteCanvasMaterial)
     return (
       <div className='loader-container loader-sphere' ref={ (ref) => { this.containerRef = ref } } />
     )
