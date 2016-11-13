@@ -1,6 +1,6 @@
 {
   "name": "react-canvas-loaders",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Loader Components for ReactJS using canvas",
   "repository": {
     "type": "git",
