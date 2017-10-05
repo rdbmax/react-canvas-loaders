@@ -1,6 +1,7 @@
 import times from 'lodash/times'
 
-import React, { PropTypes, PureComponent } from 'react'
+import React, { PureComponent } from 'react'
+import PropTypes from 'prop-types'
 
 import requestAnimationFrame from '../utils/get-request-anim-frame'
 
