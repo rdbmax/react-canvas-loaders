@@ -1,3 +1,5 @@
+[![DeepScan Grade](https://deepscan.io/api/projects/572/branches/930/badge/grade.svg)](https://deepscan.io/dashboard/#view=project&pid=572&bid=930)
+
 # react-canvas-loaders
 
 
